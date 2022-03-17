@@ -1,4 +1,6 @@
+import Lox.error
 import TokenType.*
+
 
 class Scanner(private val source: String) {
     private val tokens = mutableListOf<Token>()
@@ -42,8 +44,9 @@ class Scanner(private val source: String) {
             '\r' -> Unit
             '\t' -> Unit
             '\n' -> line++
+            '"' -> string()
             else -> {
-                Lox.error(line, "Unexpected character.")
+                error(line, "Unexpected character.")
             }
         }
 
@@ -75,5 +78,23 @@ class Scanner(private val source: String) {
 
     private fun peek(): Char {
         return if (isAtEnd()) '\u0000' else source[current]
+    }
+
+    private fun string() {
+        while (peek() != '"' && !isAtEnd()) {
+            if (peek() == '\n') line++
+            advance()
+        }
+        if (isAtEnd()) {
+            error(line, "Unterminated string.")
+            return
+        }
+
+        // The closing ".
+        advance()
+
+        // Trim the surrounding quotes.
+        val value = source.substring(start + 1, current - 1)
+        addToken(STRING, value)
     }
 }
