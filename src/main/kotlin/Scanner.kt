@@ -47,8 +47,11 @@ class Scanner(private val source: String) {
             '"' -> string()
             'o' -> if (match('r')) addToken(OR)
             else -> {
-                if (isDigit(c)) number()
-                else error(line, "Unexpected character.")
+                when {
+                    isDigit(c) -> number()
+                    isAlpha(c) -> identifier()
+                    else -> error(line, "Unexpected character.")
+                }
             }
         }
 
@@ -118,5 +121,18 @@ class Scanner(private val source: String) {
             while (isDigit(peek())) advance()
         }
         addToken(NUMBER, source.substring(start, current).toDouble())
+    }
+
+    private fun identifier() {
+        while (isAlphaNumeric(peek())) advance()
+        addToken(IDENTIFIER)
+    }
+
+    private fun isAlpha(c: Char): Boolean {
+        return c in 'a'..'z' || c in 'A'..'Z' || c == '_'
+    }
+
+    private fun isAlphaNumeric(c: Char): Boolean {
+        return isAlpha(c) || isDigit(c)
     }
 }
