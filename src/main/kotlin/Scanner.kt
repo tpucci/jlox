@@ -29,6 +29,10 @@ class Scanner(private val source: String) {
             '+' -> addToken(PLUS)
             ';' -> addToken(SEMICOLON)
             '*' -> addToken(STAR)
+            '!' -> addToken(if (match('=')) BANG_EQUAL else BANG)
+            '=' -> addToken(if (match('=')) EQUAL_EQUAL else EQUAL)
+            '<' -> addToken(if (match('=')) LESS_EQUAL else LESS)
+            '>' -> addToken(if (match('=')) GREATER_EQUAL else GREATER)
             else -> {
                 Lox.error(line, "Unexpected character.")
             }
@@ -48,4 +52,15 @@ class Scanner(private val source: String) {
     private fun advance(): Char = source[current++]
 
     private fun isAtEnd(): Boolean = current >= source.length
+
+    private fun match(expected: Char): Boolean {
+        return when {
+            isAtEnd() -> false
+            source[current] != expected -> false
+            else -> {
+                current++
+                true
+            }
+        }
+    }
 }
