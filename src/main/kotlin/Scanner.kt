@@ -33,6 +33,11 @@ class Scanner(private val source: String) {
             '=' -> addToken(if (match('=')) EQUAL_EQUAL else EQUAL)
             '<' -> addToken(if (match('=')) LESS_EQUAL else LESS)
             '>' -> addToken(if (match('=')) GREATER_EQUAL else GREATER)
+            '/' -> {
+                if (match('/')) {
+                    while (peek() != '\n' && !isAtEnd()) advance()
+                } else addToken(SLASH)
+            }
             else -> {
                 Lox.error(line, "Unexpected character.")
             }
@@ -62,5 +67,9 @@ class Scanner(private val source: String) {
                 true
             }
         }
+    }
+
+    private fun peek(): Char {
+        return if (isAtEnd()) '\u0000' else source[current]
     }
 }
