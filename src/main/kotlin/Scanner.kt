@@ -38,6 +38,10 @@ class Scanner(private val source: String) {
                     while (peek() != '\n' && !isAtEnd()) advance()
                 } else addToken(SLASH)
             }
+            ' ' -> Unit
+            '\r' -> Unit
+            '\t' -> Unit
+            '\n' -> line++
             else -> {
                 Lox.error(line, "Unexpected character.")
             }
