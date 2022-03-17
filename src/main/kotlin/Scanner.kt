@@ -45,8 +45,8 @@ class Scanner(private val source: String) {
             '\t' -> Unit
             '\n' -> line++
             '"' -> string()
-
             in '0'..'9' -> number()
+            'o' -> if (match('r')) addToken(OR)
             else -> {
                 error(line, "Unexpected character.")
             }
