@@ -20,7 +20,7 @@ class Scanner(private val source: String) {
     }
 
     private fun scanToken() {
-        when (advance()) {
+        when (val c = advance()) {
             '(' -> addToken(LEFT_PAREN)
             ')' -> addToken(RIGHT_PAREN)
             '{' -> addToken(LEFT_BRACE)
@@ -45,10 +45,10 @@ class Scanner(private val source: String) {
             '\t' -> Unit
             '\n' -> line++
             '"' -> string()
-            in '0'..'9' -> number()
             'o' -> if (match('r')) addToken(OR)
             else -> {
-                error(line, "Unexpected character.")
+                if (isDigit(c)) number()
+                else error(line, "Unexpected character.")
             }
         }
 
