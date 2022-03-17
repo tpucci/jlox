@@ -147,7 +147,11 @@ class Scanner(private val source: String) {
 
     private fun identifier() {
         while (isAlphaNumeric(peek())) advance()
-        addToken(IDENTIFIER)
+
+        val text = source.substring(start, current)
+        var type = keywords[text]
+        if (type == null) type = IDENTIFIER
+        addToken(type)
     }
 
     private fun isAlpha(c: Char): Boolean {
